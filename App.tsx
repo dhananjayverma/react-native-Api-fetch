@@ -1,15 +1,41 @@
+import React from "react";
+import { useEffect, useState } from "react";
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Button, FlatList } from 'react-native';
 
+type listItemType={
+  id:number;
+  title:string
+  price:number
+}
 export default function App() {
+  const [list, setList] = useState();
+
+  useEffect(() => {
+    fetch("https://fakestoreapi.com/products").then((res) => {
+      return res.json()
+    }).then((data) => {
+      setList(data)
+    })
+  }, [])
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <FlatList 
+      data={list} 
+      keyExtractor={(listItem:listItemType)=>{
+        return listItem.id.toString();
+      }}
+      renderItem={({item})=>{
+        return <Text>
+        {item.title}
+        {item.price}
+      
+      </Text>
+  }}/>
+<StatusBar style="auto" />
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -17,4 +43,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+
+  btnContainer: {
+    flexDirection: "row"
+  },
+
 });
